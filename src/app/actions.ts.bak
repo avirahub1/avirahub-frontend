@@ -1,0 +1,15 @@
+
+'use server';
+
+import { generateProjectDetails, type GenerateProjectDetailsInput } from '@/ai/flows/generate-project-details';
+
+
+export async function handleAiGeneration(input: GenerateProjectDetailsInput): Promise<string> {
+    try {
+        const result = await generateProjectDetails(input);
+        return result.projectDetails;
+    } catch (error) {
+        console.error('AI generation failed:', error);
+        return 'Error: Could not generate project details. Please try again.';
+    }
+}

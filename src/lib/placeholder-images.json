@@ -1,0 +1,52 @@
+{
+  "placeholderImages": [
+    {
+      "id": "project-1",
+      "title": "Project Showcase 1 - Gym",
+      "description": "A dynamic website for a fitness studio, featuring class schedules and member portals.",
+      "imageUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxneW0lMjB3ZWJzaXRlfGVufDB8fHx8MTc2NTI4MDI1N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gym website",
+      "href": "/services/gym-website-demo"
+    },
+    {
+      "id": "project-2",
+      "title": "Project Showcase 2 - Gym",
+      "description": "A sleek, modern website for a crossfit-focused gym with online booking.",
+      "imageUrl": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxneW0lMjBlcXVpcG1lbnR8ZW58MHx8fHwxNzY1MjkxNTk3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "crossfit gym",
+      "href": "/services/gym-website-demo-2"
+    },
+    {
+      "id": "project-3",
+      "title": "Project Showcase 3 - Cafe",
+      "description": "An elegant website for a modern cafe with online menu and reservations.",
+      "imageUrl": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYWZlJTIwYW1iaWFuY2V8ZW58MHx8fHwxNzY1NTc4ODMyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cafe website",
+      "href": "/services/restaurant-website-demo"
+    },
+    {
+      "id": "project-4",
+      "title": "Project Showcase 4 - Salon",
+      "description": "A chic and luxurious website for a high-end salon and spa.",
+      "imageUrl": "https://images.unsplash.com/photo-1560066984-138dadb4c035?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxzYWxvbiUyMGludGVyaW9yfGVufDB8fHx8MTc2NTE3NTQ2MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "salon interior",
+      "href": "/services/salon-website-demo"
+    },
+    {
+      "id": "project-5",
+      "title": "Project Showcase 5 - Real Estate",
+      "description": "A professional website for a luxury real estate agency with property listings.",
+      "imageUrl": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBob3VzZXxlbnwwfHx8fDE3NjU1ODQyNTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "modern house",
+      "href": "/services/real-estate-website-demo"
+    },
+    {
+      "id": "project-6",
+      "title": "Project Showcase 6 - E-Learning",
+      "description": "An engaging e-learning platform with course management and student portals.",
+      "imageUrl": "https://images.unsplash.com/photo-1762330918491-f4288a62adb8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxlLWxlYXJuaW5nJTIwcGxhdGZvcm18ZW58MHx8fHwxNzY1NjE2NzY5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "e-learning platform",
+      "href": "/services/education-website-demo"
+    }
+  ]
+}
