@@ -1,36 +1,30 @@
 
-import type { Metadata } from 'next';
+'use client';
+
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { ContactForm } from '@/components/contact-form';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import connectToDatabase from '@/lib/mongodb';
-import CMS from '@/models/CMS';
+import { useState, useEffect } from 'react';
+import { fetchCMS } from '@/services/api';
 
-export const metadata: Metadata = {
-  title: 'Contact Us | Get a Free Web Design Quote | Avira Hub',
-  description: 'Ready to start your project? Contact Avira Hub today for a free consultation and quote on our expert web design and development services.',
-};
+export default function ContactPage() {
+  const [data, setData] = useState<any>({});
 
-async function getContactData(): Promise<any> {
-  try {
-    await connectToDatabase();
-    const data = await CMS.findOne({ section: 'contact' }).lean();
-    return data || {};
-  } catch (error) {
-    return {};
-  }
-}
-
-export const dynamic = 'force-dynamic';
-
-export default async function ContactPage() {
-  const data = await getContactData();
+  useEffect(() => {
+    fetchCMS('contact').then(res => {
+      if (Array.isArray(res)) {
+        setData(res.find((d: any) => d.section === 'contact') || {});
+      } else {
+        setData(res || {});
+      }
+    }).catch(console.error);
+  }, []);
 
   const address = data.address || "123 Tech Avenue, Bangalore, India";
   const email = data.email || "contact@avirahub.in";
   const phone = data.phone || "+91 9137315368";
-  const mapEmbed = data.googleMapEmbed; // If present, use it
+  const mapEmbed = data.googleMapEmbed;
 
   return (
     <div className="flex flex-col min-h-screen">

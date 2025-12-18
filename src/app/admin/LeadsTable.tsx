@@ -11,6 +11,9 @@ type ContactItem = {
   createdAt: string;
 };
 
+
+import { fetchContacts, deleteContact } from '@/services/api';
+
 export default function LeadsTable() {
   const [data, setData] = useState<ContactItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,9 +25,7 @@ export default function LeadsTable() {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/contact', { cache: 'no-store' });
-        if (!res.ok) throw new Error('Failed to load leads');
-        const json = await res.json();
+        const json = await fetchContacts();
         setData(json || []);
       } catch (err: any) {
         setError(err.message || 'Failed to load leads');
@@ -54,16 +55,16 @@ export default function LeadsTable() {
   const normalizedSearch = search.trim().toLowerCase();
   const filtered = normalizedSearch
     ? data.filter((item) => {
-        const haystack = [
-          item.name,
-          item.email,
-          item.phone || '',
-          item.message,
-        ]
-          .join(' ')
-          .toLowerCase();
-        return haystack.includes(normalizedSearch);
-      })
+      const haystack = [
+        item.name,
+        item.email,
+        item.phone || '',
+        item.message,
+      ]
+        .join(' ')
+        .toLowerCase();
+      return haystack.includes(normalizedSearch);
+    })
     : data;
 
   const handleExport = () => {
@@ -113,23 +114,14 @@ export default function LeadsTable() {
     }
   };
 
+
   const handleDelete = async (id: string) => {
     const confirmDelete = window.confirm('Are you sure?');
     if (!confirmDelete) return;
 
     setDeletingId(id);
     try {
-      const res = await fetch(`/api/contact?id=${encodeURIComponent(id)}`, {
-        method: 'DELETE',
-      });
-
-      const json = await res.json().catch(() => ({}));
-      console.log('Delete lead response:', json);
-
-      if (!res.ok || !json?.success) {
-        alert(json?.error || 'Failed to delete lead.');
-        return;
-      }
+      await deleteContact(id);
 
       setData((prev) => prev.filter((item) => item._id !== id));
     } catch (err) {
@@ -139,6 +131,7 @@ export default function LeadsTable() {
       setDeletingId(null);
     }
   };
+
 
   return (
     <section className="space-y-4">

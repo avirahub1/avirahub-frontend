@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Send } from 'lucide-react';
+import { createContact } from '@/services/api';
 
 export function ContactForm() {
   const { toast } = useToast();
@@ -28,18 +29,10 @@ export function ContactForm() {
     setSubmitting(true);
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, phone, message }),
-      });
-
-      const data = await res.json();
+      const data = await createContact({ name, email, phone, message });
       console.log('Contact form response:', data);
 
-      if (!res.ok || !data?.success) {
+      if (!data?.success) {
         const errorText = data?.error || 'Something went wrong. Please try again.';
         setErrorMessage(errorText);
         toast({

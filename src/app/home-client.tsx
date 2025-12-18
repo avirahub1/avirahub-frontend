@@ -12,8 +12,26 @@ import ContactSection from '@/components/sections/contact-section';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 
-export default function HomeClient({ statsData }: { statsData?: any }) {
+
+import { useState, useEffect } from 'react';
+import { fetchCMS } from '@/services/api';
+
+export default function HomeClient() {
     const isMobile = useIsMobile();
+    const [statsData, setStatsData] = useState<any>(null);
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const data = await fetchCMS('about_stats');
+                setStatsData(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        load();
+    }, []);
+
 
     return (
         <>

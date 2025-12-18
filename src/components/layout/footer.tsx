@@ -1,23 +1,34 @@
 
+
+'use client';
+
 import { Github, Linkedin, Twitter, Youtube } from 'lucide-react';
 import Link from 'next/link';
-import connectToDatabase from '@/lib/mongodb';
-import CMS from '@/models/CMS';
+import { useState, useEffect } from 'react';
+import { fetchCMS } from '@/services/api';
 
-async function getFooterData() {
-  try {
-    await connectToDatabase();
-    const data = await CMS.findOne({ section: 'footer' }).lean();
-    return data;
-  } catch (error) {
-    console.error('Failed to fetch footer data', error);
-    return null;
-  }
-}
-
-export default async function Footer() {
-  const data = await getFooterData();
+export default function Footer() {
+  const [data, setData] = useState<any>(null);
   const year = new Date().getFullYear();
+
+  useEffect(() => {
+    fetchCMS('footer').then(res => {
+      // fetchCMS returns object with section='footer', or if filtered by backend, the object itself.
+      // My backend `cms.js` returns array if finding all, or object?
+      // Let's assume api.ts `fetchCMS('footer')` returns the specific section object if my backend supports it, 
+      // OR `api.ts` filters it.
+      // In Step 187 replacement of `api.ts`, `fetchCMS` uses `?section=...`. 
+      // Backend `cms.js` (Step 179) logic: `req.query.section`.
+      // If I assume backend filters, then `res` is Array or Object? 
+      // Backend `cms.js`: `if (section) const data = await CMS.findOne({ section }); res.json(data);`
+      // So it returns Object.
+      if (Array.isArray(res)) {
+        setData(res.find((d: any) => d.section === 'footer') || {});
+      } else {
+        setData(res || {});
+      }
+    }).catch(err => console.error(err));
+  }, []);
 
   const footerText = data?.footerText || `© ${year} Avira Hub. All rights reserved.`;
   const copyright = data?.copyrightText || footerText;
@@ -42,11 +53,7 @@ export default async function Footer() {
               <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors"><Linkedin className="h-5 w-5 transition-transform hover:scale-125" /></a>
             )}
             {socialLinks.instagram && (
-              // Lucide doesn't have Instagram by default? Check if it does, if not skip or use another icon. 
-              // Actually Lucide React usually has Instagram. Let's assume it does, but I only imported Github, Linkedin, Twitter above.
-              // I need to update imports.
               <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
-                {/* Fallback to text if Icon missing or just use generic */}
                 <span>IG</span>
               </a>
             )}
@@ -64,3 +71,4 @@ export default async function Footer() {
     </footer>
   );
 }
+

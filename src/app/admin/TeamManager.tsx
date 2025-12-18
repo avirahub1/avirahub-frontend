@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { fetchTeam, saveTeamMember, deleteTeamMember } from '@/services/api';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,11 +53,10 @@ export default function TeamManager() {
 
     const { register, handleSubmit, reset, setValue } = useForm<TeamMember>();
 
+
     const fetchMembers = async () => {
         try {
-            const res = await fetch('/api/team');
-            if (!res.ok) throw new Error('Failed to fetch');
-            const data = await res.json();
+            const data = await fetchTeam(false); // Fetch all for admin
             setMembers(data);
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to load team members" });
@@ -73,20 +73,11 @@ export default function TeamManager() {
         try {
             const payload = {
                 ...data,
-                // ensure number conversion
                 order: Number(data.order)
             };
-
-            const method = editingMember ? 'PUT' : 'POST';
             if (editingMember) payload._id = editingMember._id;
 
-            const res = await fetch('/api/team', {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) throw new Error('Operation failed');
+            await saveTeamMember(payload);
 
             toast({ title: "Success", description: `Team member ${editingMember ? 'updated' : 'added'} successfully` });
             fetchMembers();
@@ -101,14 +92,14 @@ export default function TeamManager() {
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this member?')) return;
         try {
-            const res = await fetch(`/api/team?id=${id}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Delete failed');
+            await deleteTeamMember(id);
             toast({ title: "Success", description: "Member deleted" });
             fetchMembers();
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to delete" });
         }
     };
+
 
     const openEdit = (member: TeamMember) => {
         setEditingMember(member);

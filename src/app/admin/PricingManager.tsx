@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { fetchPricing, savePricing, deletePricing } from '@/services/api';
 import { useForm } from 'react-hook-form';
 import { Pencil, Trash2, Plus, Check, X, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -40,11 +41,10 @@ export default function PricingManager() {
         status: boolean; // mapped to active/inactive
     }>();
 
+
     const fetchPlans = async () => {
         try {
-            const res = await fetch('/api/pricing');
-            if (!res.ok) throw new Error('Failed to fetch');
-            const data = await res.json();
+            const data = await fetchPricing();
             setPlans(data);
         } catch (error) {
             toast({
@@ -68,31 +68,11 @@ export default function PricingManager() {
                 features: data.features.split('\n').map((f: string) => f.trim()).filter((f: string) => f),
                 status: data.status ? 'active' : 'inactive',
             };
+            if (editingPlan) payload._id = editingPlan._id;
 
-            if (editingPlan) {
-                const res = await fetch('/api/pricing', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ...payload, _id: editingPlan._id }),
-                });
-                if (!res.ok) throw new Error('Failed to update');
-                toast({
-                    title: "Success",
-                    description: "Plan updated successfully",
-                });
-            } else {
-                const res = await fetch('/api/pricing', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                });
-                if (!res.ok) throw new Error('Failed to create');
-                toast({
-                    title: "Success",
-                    description: "Plan created successfully",
-                });
-            }
+            await savePricing(payload);
 
+            toast({ title: "Success", description: `Plan ${editingPlan ? 'updated' : 'created'} successfully` });
             setIsDialogOpen(false);
             reset();
             setEditingPlan(null);
@@ -109,12 +89,8 @@ export default function PricingManager() {
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure?')) return;
         try {
-            const res = await fetch(`/api/pricing?id=${id}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Failed to delete');
-            toast({
-                title: "Success",
-                description: "Plan deleted",
-            });
+            await deletePricing(id);
+            toast({ title: "Success", description: "Plan deleted" });
             fetchPlans();
         } catch (error) {
             toast({
@@ -124,6 +100,7 @@ export default function PricingManager() {
             });
         }
     };
+
 
     const startEdit = (plan: PricingPlan) => {
         setEditingPlan(plan);

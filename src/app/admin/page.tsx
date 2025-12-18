@@ -1,28 +1,26 @@
 
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+// Client Component for Admin Dashboard Protection
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminDashboardNoSSR from './admin-dashboard-no-ssr';
 
-// Force dynamic rendering because getServerSession relies on request headers.
-export const dynamic = 'force-dynamic';
+export default function AdminDashboardPage() {
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) {
+      router.push('/login');
+    } else {
+      setAuthorized(true);
+    }
+  }, [router]);
 
-export default async function AdminDashboardPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    redirect('/login');
-  }
-
-  if ((session.user as any)?.role !== 'admin') {
-    return (
-      <main className="mx-auto flex min-h-screen max-w-3xl items-center justify-center px-6">
-        <div className="rounded-lg border border-red-200 bg-red-50 px-6 py-4 text-center text-red-700">
-          Access Denied
-        </div>
-      </main>
-    );
+  if (!authorized) {
+    return null; // or loading spinner
   }
 
   return (
@@ -32,10 +30,18 @@ export default async function AdminDashboardPage() {
           <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-sm text-gray-500">Manage your website content and leads</p>
         </div>
+        <button
+          onClick={() => {
+            localStorage.removeItem('admin_token');
+            router.push('/login');
+          }}
+          className="text-sm text-red-600 hover:underline"
+        >
+          Logout
+        </button>
       </header>
 
       <AdminDashboardNoSSR />
     </main>
   );
 }
-

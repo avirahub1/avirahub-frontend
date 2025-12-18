@@ -20,25 +20,26 @@ interface StatItem {
     active: boolean;
 }
 
+
+import { fetchCMS, updateCMS } from '@/services/api';
+
 export default function AboutSectionsManager() {
+
     const [loading, setLoading] = useState(true);
     const { toast } = useToast();
+    const [stats, setStats] = useState<StatItem[]>([]);
 
-    // Section Headers Forms
     const teamHeaderForm = useForm();
     const statsSectionForm = useForm();
 
-    // Stats Items State
-    const [stats, setStats] = useState<StatItem[]>([]);
+
 
     const fetchContent = async () => {
         try {
-            const res = await fetch('/api/cms');
-            if (!res.ok) throw new Error('Failed to fetch');
-            const data = await res.json();
+            const data = await fetchCMS();
 
-            const teamHeader = data.find((d: any) => d.section === 'about_team') || {};
-            const statsSection = data.find((d: any) => d.section === 'about_stats') || {};
+            const teamHeader = Array.isArray(data) ? data.find((d: any) => d.section === 'about_team') || {} : {};
+            const statsSection = Array.isArray(data) ? data.find((d: any) => d.section === 'about_stats') || {} : {};
 
             teamHeaderForm.reset(teamHeader);
             statsSectionForm.reset({
@@ -60,12 +61,7 @@ export default function AboutSectionsManager() {
     const saveSectionHeader = async (section: string, data: any) => {
         try {
             const payload = { ...data, section };
-            const res = await fetch('/api/cms', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error('Failed to save');
+            await updateCMS(payload);
             toast({ title: "Success", description: "Section header updated" });
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to save" });
@@ -81,18 +77,14 @@ export default function AboutSectionsManager() {
                 description: formData.description,
                 stats: updatedStats
             };
-            const res = await fetch('/api/cms', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error('Failed to save');
+            await updateCMS(payload);
             setStats(updatedStats);
             toast({ title: "Success", description: "Stats updated" });
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to save stats" });
         }
     };
+
 
     const addStat = () => {
         const newStat = { label: 'New Stat', value: '100+', icon: 'Award', order: stats.length + 1, active: true };

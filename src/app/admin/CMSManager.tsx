@@ -10,24 +10,31 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
 
+
+import { fetchCMS, updateCMS } from '@/services/api';
+
 export default function CMSManager() {
+
     const [loading, setLoading] = useState(true);
     const { toast } = useToast();
 
-    // Forms
     const aboutForm = useForm();
     const footerForm = useForm();
     const contactForm = useForm();
 
+
+
     const fetchContent = async () => {
         try {
-            const res = await fetch('/api/cms');
-            if (!res.ok) throw new Error('Failed to fetch');
-            const data = await res.json();
+            const data = await fetchCMS(); // Fetch all
 
-            const about = data.find((d: any) => d.section === 'about') || {};
-            const footer = data.find((d: any) => d.section === 'footer') || {};
-            const contact = data.find((d: any) => d.section === 'contact') || {};
+            // Backend returns array if no section specified? 
+            // My route implementation: if (!section) res.json(allData);
+            // Yes.
+
+            const about = Array.isArray(data) ? data.find((d: any) => d.section === 'about') || {} : {};
+            const footer = Array.isArray(data) ? data.find((d: any) => d.section === 'footer') || {} : {};
+            const contact = Array.isArray(data) ? data.find((d: any) => d.section === 'contact') || {} : {};
 
             aboutForm.reset(about);
             footerForm.reset({
@@ -68,18 +75,13 @@ export default function CMSManager() {
                 }
             }
 
-            const res = await fetch('/api/cms', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) throw new Error('Failed to save');
+            await updateCMS(payload);
             toast({ title: "Success", description: `${section.charAt(0).toUpperCase() + section.slice(1)} updated` });
         } catch (error) {
             toast({ variant: "destructive", title: "Error", description: "Failed to save content" });
         }
     };
+
 
     if (loading) return <div className="flex items-center justify-center p-8"><Loader2 className="animate-spin" /></div>;
 
