@@ -1,5 +1,5 @@
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://avirahub-backend.onrender.com/api';
 
 export async function fetchCMS(section?: string) {
     const url = section ? `${API_URL}/cms?section=${section}` : `${API_URL}/cms`;
