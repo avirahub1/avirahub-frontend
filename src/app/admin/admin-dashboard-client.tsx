@@ -53,8 +53,8 @@ export default function AdminDashboardClient() {
                     <AboutSectionsManager />
                 </div>
             </TabsContent>
-            <TabsContent value="blogs">
-                <div className="bg-white p-6 rounded-lg border shadow-sm">
+            <TabsContent value="blogs" className="w-full">
+                <div className="bg-white p-6 rounded-lg border shadow-sm w-full">
                     <BlogManager />
                 </div>
             </TabsContent>

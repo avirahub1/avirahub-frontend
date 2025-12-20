@@ -52,9 +52,15 @@ export default function BlogManager() {
     const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<Blog & {
         tagsString: string;
         keywordsString: string;
-    }>();
+    }>({
+        defaultValues: {
+            status: 'draft',
+            tagsString: '',
+            keywordsString: '',
+        }
+    });
 
-    const status = watch('status');
+    const status = watch('status') || 'draft';
     const content = watch('content');
 
     // Auto-generate slug from title
@@ -67,14 +73,17 @@ export default function BlogManager() {
 
     const fetchBlogs = async () => {
         try {
+            setLoading(true);
             const data = await fetchBlogsAdmin();
-            setBlogs(data);
-        } catch (error) {
+            setBlogs(data || []);
+        } catch (error: any) {
+            console.error('Failed to fetch blogs:', error);
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: "Failed to load blogs",
+                description: error.message || "Failed to load blogs",
             });
+            setBlogs([]);
         } finally {
             setLoading(false);
         }
@@ -99,7 +108,9 @@ export default function BlogManager() {
                 ...blog,
                 tagsString: blog.tags?.join(', ') || '',
                 keywordsString: blog.seoKeywords?.join(', ') || '',
+                status: blog.status || 'draft',
             });
+            setPreviewContent(blog.content || '');
             setIsDialogOpen(true);
         } catch (error) {
             toast({
@@ -119,7 +130,7 @@ export default function BlogManager() {
             content: '',
             category: '',
             tags: [],
-            status: 'draft',
+            status: 'draft' as 'draft' | 'published',
             metaTitle: '',
             metaDescription: '',
             seoKeywords: [],
@@ -131,6 +142,7 @@ export default function BlogManager() {
             tagsString: '',
             keywordsString: '',
         });
+        setPreviewContent('');
         setIsDialogOpen(true);
     };
 
@@ -200,11 +212,15 @@ export default function BlogManager() {
     };
 
     if (loading) {
-        return <div className="text-center py-10">Loading blogs...</div>;
+        return (
+            <div className="text-center py-10">
+                <p>Loading blogs...</p>
+            </div>
+        );
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
             <div className="flex justify-between items-center">
                 <div>
                     <h3 className="text-lg font-semibold">Blog Posts</h3>
