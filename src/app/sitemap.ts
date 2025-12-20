@@ -1,10 +1,14 @@
+// Note: With static export (output: 'export'), dynamic sitemap generation doesn't work
+// This file is kept for reference but won't be used during build
+// Consider removing 'output: export' from next.config.ts to enable dynamic sitemaps
+// OR generate sitemap.xml manually and place it in public/sitemap.xml
+
 import { MetadataRoute } from 'next';
-import { fetchBlogs } from '@/services/api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://avirahub.in';
     
-    // Static pages
+    // Static pages only - dynamic blogs can't be included with static export
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: siteUrl,
@@ -42,28 +46,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'monthly',
             priority: 0.8,
         },
-        {
-            url: `${siteUrl}/services`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
     ];
 
-    // Dynamic blog pages
-    let blogPages: MetadataRoute.Sitemap = [];
-    try {
-        const blogs = await fetchBlogs({ limit: 1000 });
-        blogPages = blogs.map((blog: any) => ({
-            url: `${siteUrl}/blog/${blog.slug}`,
-            lastModified: blog.updatedAt ? new Date(blog.updatedAt) : blog.publishedAt ? new Date(blog.publishedAt) : new Date(),
-            changeFrequency: 'weekly' as const,
-            priority: 0.7,
-        }));
-    } catch (error) {
-        console.error('Failed to fetch blogs for sitemap:', error);
-    }
-
-    return [...staticPages, ...blogPages];
+    return staticPages;
 }
 
