@@ -8,6 +8,7 @@ import teamRoutes from './routes/team.js';
 import contactRoutes from './routes/contact.js';
 import authRoutes from './routes/auth.js';
 import pricingRoutes from './routes/pricing.js';
+import blogRoutes from './routes/blog.js';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use('/api/team', teamRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/pricing', pricingRoutes);
+app.use('/api/blog', blogRoutes);
 
 // Health check
 app.get('/', (req, res) => {

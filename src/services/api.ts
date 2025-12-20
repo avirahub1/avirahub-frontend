@@ -140,3 +140,70 @@ export async function deleteContact(id: string) {
     if (!res.ok) throw new Error('Failed to delete contact');
     return res.json();
 }
+
+// Blog CRUD - Public
+export async function fetchBlogs(params?: { category?: string; tag?: string; limit?: number; skip?: number }) {
+    const queryParams = new URLSearchParams();
+    if (params?.category) queryParams.append('category', params.category);
+    if (params?.tag) queryParams.append('tag', params.tag);
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.skip) queryParams.append('skip', params.skip.toString());
+    
+    const url = `${API_URL}/blog${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const res = await fetchWithRetry(url);
+    if (!res.ok) throw new Error('Failed to fetch blogs');
+    return res.json();
+}
+
+export async function fetchBlogBySlug(slug: string) {
+    const res = await fetchWithRetry(`${API_URL}/blog/slug/${slug}`);
+    if (!res.ok) throw new Error('Failed to fetch blog');
+    return res.json();
+}
+
+export async function fetchBlogCategories() {
+    const res = await fetchWithRetry(`${API_URL}/blog/categories`);
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    return res.json();
+}
+
+export async function fetchBlogTags() {
+    const res = await fetchWithRetry(`${API_URL}/blog/tags`);
+    if (!res.ok) throw new Error('Failed to fetch tags');
+    return res.json();
+}
+
+// Blog CRUD - Admin
+export async function fetchBlogsAdmin() {
+    const res = await fetchWithRetry(`${API_URL}/blog/admin`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch blogs');
+    return res.json();
+}
+
+export async function fetchBlogById(id: string) {
+    const res = await fetchWithRetry(`${API_URL}/blog/admin/${id}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to fetch blog');
+    return res.json();
+}
+
+export async function saveBlog(data: any) {
+    const isUpdate = !!data._id;
+    const method = isUpdate ? 'PUT' : 'POST';
+    const url = isUpdate ? `${API_URL}/blog/${data._id}` : `${API_URL}/blog`;
+    const res = await fetchWithRetry(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || 'Failed to save blog');
+    }
+    return res.json();
+}
+
+export async function deleteBlog(id: string) {
+    const res = await fetchWithRetry(`${API_URL}/blog/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete blog');
+    return res.json();
+}

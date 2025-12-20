@@ -4,6 +4,7 @@ import LeadsTable from '@/app/admin/LeadsTable';
 import PricingManager from '@/app/admin/PricingManager';
 import CMSManager from '@/app/admin/CMSManager';
 import AboutSectionsManager from '@/app/admin/AboutSectionsManager';
+import BlogManager from '@/app/admin/BlogManager';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function AdminDashboardClient() {
@@ -14,6 +15,7 @@ export default function AdminDashboardClient() {
                 <TabsTrigger value="pricing">Pricing Plans</TabsTrigger>
                 <TabsTrigger value="cms">Website CMS</TabsTrigger>
                 <TabsTrigger value="about_sections">About Page</TabsTrigger>
+                <TabsTrigger value="blogs">Blog Management</TabsTrigger>
             </TabsList>
             <TabsContent value="leads">
                 <div className="bg-white p-6 rounded-lg border shadow-sm">
@@ -49,6 +51,11 @@ export default function AdminDashboardClient() {
                         <p className="text-sm text-gray-500">Manage Our Team and Trusted Stats sections.</p>
                     </div>
                     <AboutSectionsManager />
+                </div>
+            </TabsContent>
+            <TabsContent value="blogs">
+                <div className="bg-white p-6 rounded-lg border shadow-sm">
+                    <BlogManager />
                 </div>
             </TabsContent>
         </Tabs>
