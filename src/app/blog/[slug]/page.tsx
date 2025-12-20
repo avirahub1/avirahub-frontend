@@ -8,13 +8,24 @@ import { fetchBlogBySlug, fetchBlogs } from '@/services/api';
 import { formatDate } from '@/lib/utils';
 
 // Generate static params for better performance (optional - can be removed for fully dynamic)
+// With static export, this runs at build time - API must be accessible
+// If API fails, returns empty array to allow build to continue
 export async function generateStaticParams() {
     try {
         const blogs = await fetchBlogs({ limit: 100 });
+        
+        if (!Array.isArray(blogs)) {
+            console.warn('generateStaticParams: API returned non-array, returning empty');
+            return [];
+        }
+        
         return blogs.map((blog: any) => ({
             slug: blog.slug,
         }));
     } catch (error) {
+        // Log but don't fail build - return empty array to allow build to continue
+        // Pages will be generated on-demand at runtime if needed
+        console.warn('generateStaticParams: Failed to fetch blogs, continuing with empty params:', error);
         return [];
     }
 }
@@ -69,8 +80,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             },
         };
     } catch (error) {
+        // Log but don't fail build - return default metadata
+        console.warn(`generateMetadata: Failed to fetch blog ${params.slug}, using defaults:`, error);
         return {
             title: 'Blog | Avira Hub',
+            description: 'Read the latest insights from Avira Hub',
         };
     }
 }
@@ -125,6 +139,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     try {
         blog = await fetchBlogBySlug(params.slug);
     } catch (error) {
+        // Log error but don't fail build - show not found page
+        // With static export, this page will be generated with notFound() if API fails
+        console.warn(`BlogPostPage: Failed to fetch blog ${params.slug}:`, error);
         notFound();
     }
 

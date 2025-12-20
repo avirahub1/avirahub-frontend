@@ -17,9 +17,17 @@ export const metadata: Metadata = {
 async function getBlogs() {
     try {
         const blogs = await fetchBlogs({ limit: 50 });
-        return blogs || [];
+        
+        if (!Array.isArray(blogs)) {
+            console.warn('getBlogs: API returned non-array, returning empty array');
+            return [];
+        }
+        
+        return blogs;
     } catch (error) {
-        console.error('Failed to fetch blogs:', error);
+        // Log but don't fail build - return empty array
+        // Build will succeed with empty blog list, pages can fetch data at runtime
+        console.warn('getBlogs: Failed to fetch blogs, continuing with empty array:', error);
         return [];
     }
 }

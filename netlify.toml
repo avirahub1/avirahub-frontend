@@ -1,0 +1,21 @@
+[build]
+  # Build command for static export
+  command = "npm run build"
+  # Publish directory for Next.js static export
+  publish = "out"
+
+# Node.js version (Netlify defaults to 18.x, but we specify explicitly)
+[build.environment]
+  NODE_VERSION = "20"
+
+# IMPORTANT: Do NOT use @netlify/plugin-nextjs for static export
+# Static export generates static HTML files, not a server-side Next.js app
+# Netlify will auto-detect Next.js - we need to override this behavior
+
+# Environment variables should be set in Netlify UI:
+# - NEXT_PUBLIC_API_URL (e.g., https://avirahub-backend.onrender.com/api)
+# - NEXT_PUBLIC_SITE_URL (e.g., https://avirahub.in)
+
+# Redirects are handled by Next.js static export automatically
+# No additional redirects needed unless you have specific requirements
+

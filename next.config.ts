@@ -33,6 +33,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Note: With output: 'export', server actions and server-side code are not processed
+  // Genkit AI server code won't cause issues as it's not imported in production code
+  // If build still fails due to Genkit, consider moving ai/ directory outside src/ or excluding it
 };
 
 export default nextConfig;
