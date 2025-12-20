@@ -7,26 +7,27 @@ import Link from 'next/link';
 import { fetchBlogBySlug, fetchBlogs } from '@/services/api';
 import { formatDate } from '@/lib/utils';
 
-// Generate static params for better performance (optional - can be removed for fully dynamic)
-// With static export, this runs at build time - API must be accessible
-// If API fails, returns empty array to allow build to continue
+// Generate static params for static export
+// With static export, this MUST return at least one param or Next.js will error
+// If API fails, return a placeholder to allow build to continue
 export async function generateStaticParams() {
     try {
         const blogs = await fetchBlogs({ limit: 100 });
         
-        if (!Array.isArray(blogs)) {
-            console.warn('generateStaticParams: API returned non-array, returning empty');
-            return [];
+        if (!Array.isArray(blogs) || blogs.length === 0) {
+            console.warn('generateStaticParams: No blogs found, returning placeholder');
+            // Return placeholder to satisfy static export requirement
+            return [{ slug: 'placeholder' }];
         }
         
         return blogs.map((blog: any) => ({
             slug: blog.slug,
         }));
     } catch (error) {
-        // Log but don't fail build - return empty array to allow build to continue
-        // Pages will be generated on-demand at runtime if needed
-        console.warn('generateStaticParams: Failed to fetch blogs, continuing with empty params:', error);
-        return [];
+        // Log but don't fail build - return placeholder to satisfy static export
+        // The placeholder route will show 404, but build will succeed
+        console.warn('generateStaticParams: Failed to fetch blogs, using placeholder:', error);
+        return [{ slug: 'placeholder' }];
     }
 }
 

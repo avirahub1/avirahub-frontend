@@ -1,14 +1,13 @@
-// Note: With static export (output: 'export'), dynamic sitemap generation doesn't work
-// This file is kept for reference but won't be used during build
-// Consider removing 'output: export' from next.config.ts to enable dynamic sitemaps
-// OR generate sitemap.xml manually and place it in public/sitemap.xml
-
 import { MetadataRoute } from 'next';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+// Force static generation for Netlify static export compatibility
+export const dynamic = 'force-static';
+
+// Static sitemap - no API calls or dynamic data
+export default function sitemap(): MetadataRoute.Sitemap {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://avirahub.in';
     
-    // Static pages only - dynamic blogs can't be included with static export
+    // Static pages only - compatible with static export
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: siteUrl,
