@@ -142,15 +142,15 @@ export default function Header() {
                             <span className="sr-only">Open menu</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-full max-w-xs bg-background p-0">
-                            <SheetHeader className="p-4 border-b border-border flex flex-row items-center justify-between space-y-0">
+                        <SheetContent side="right" className="w-full max-w-xs bg-background p-0 flex flex-col h-full">
+                            <SheetHeader className="p-4 border-b border-border flex flex-row items-center justify-between space-y-0 flex-shrink-0">
                                 <Link href="/" className="flex items-center space-x-2" onClick={() => setIsMobileMenuOpen(false)}>
                                     <CodeXml className="h-6 w-6 text-primary" />
                                     <span className="text-lg font-bold tracking-tight">Avira Hub</span>
                                 </Link>
                                 <SheetTitle className="sr-only">Main Menu</SheetTitle>
                             </SheetHeader>
-                            <ScrollArea className="flex-grow">
+                            <ScrollArea className="flex-1 min-h-0">
                                 <nav className="p-4 space-y-4">
                                     <p className="px-4 font-semibold text-muted-foreground text-sm">Core Services</p>
                                     <div className="space-y-1">
