@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
         
         const blogs = await Blog.find(query)
             .select('-content') // Don't send full content in listing
-            .sort({ publishedAt: -1 })
+            .sort({ publishedAt: -1, createdAt: -1 }) // Fallback to createdAt if publishedAt is missing
             .limit(parseInt(limit))
             .skip(parseInt(skip))
             .lean();

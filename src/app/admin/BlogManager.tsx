@@ -18,6 +18,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
 
 type Blog = {
     _id?: string;
@@ -373,16 +374,17 @@ export default function BlogManager() {
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="content">Content (HTML) *</Label>
-                                    <Textarea
-                                        id="content"
-                                        {...register('content', { required: true })}
-                                        placeholder="Enter your blog content in HTML format..."
-                                        rows={15}
-                                        className="font-mono text-sm"
+                                    <Label htmlFor="content">Content *</Label>
+                                    <RichTextEditor
+                                        value={watch('content') || ''}
+                                        onChange={(html) => {
+                                            setValue('content', html, { shouldValidate: true });
+                                            setPreviewContent(html);
+                                        }}
+                                        placeholder="Start writing your blog content here... Use the toolbar above to format your text."
                                     />
                                     <p className="text-xs text-gray-500 mt-1">
-                                        You can write HTML directly or use a WYSIWYG editor and paste the HTML here
+                                        Write your blog content here. Use the toolbar buttons to format text, add headings, lists, and links.
                                     </p>
                                     {errors.content && (
                                         <p className="text-sm text-red-500 mt-1">Content is required</p>
