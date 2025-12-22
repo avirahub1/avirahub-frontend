@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import Chatbot from '@/components/chatbot';
 import MetaPixel from '@/components/meta-pixel';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Avira Hub | Web Development Agency in India',
@@ -66,6 +67,18 @@ export default function RootLayout({
         </noscript>
       </head>
       <body className="font-body antialiased">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17703378371"
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17703378371');
+          `}
+        </Script>
         <MetaPixel />
         {children}
         <Chatbot />
