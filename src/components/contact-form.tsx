@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Send } from 'lucide-react';
 import { createContact } from '@/services/api';
+import { trackLeadConversion } from '@/lib/gtag';
 
 export function ContactForm() {
   const { toast } = useToast();
@@ -33,7 +34,7 @@ export function ContactForm() {
       console.log('Contact form response:', data);
 
       if (!data?.success) {
-        const errorText = data?.error || 'Something went wrong. Please try again.';
+        const errorText = (data as any)?.error || 'Something went wrong. Please try again.';
         setErrorMessage(errorText);
         toast({
           variant: 'destructive',
@@ -51,6 +52,9 @@ export function ContactForm() {
           phone,
         });
       }
+
+      // Google Ads Conversion Tracking
+      trackLeadConversion();
 
       setSuccessMessage("Thanks for reaching out. We'll get back to you shortly.");
       toast({
